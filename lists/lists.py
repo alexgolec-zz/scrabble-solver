@@ -34,7 +34,8 @@ import atexit
 
 class WordList:
     '''
-    Represents a wordlist, and supports various query types.
+    Represents a wordlist, and supports various query types. In particular:
+     - in operator
     '''
     def __init__(self, name):
         # apparently __file__ is not defined when the module is called from the
@@ -62,6 +63,8 @@ class WordList:
     def contains(self, word):
         'Checks to see if the wordlist recognizes this word.'
         return word.lower() in self.wordlist
+    # the contains operator is the same function as the contains method
+    __contains__ = contains
     def add_word(self, word):
         'Manually adds a word to the wordlist.'
         self.wordlist.add(word.lower())
@@ -77,3 +80,22 @@ class WordList:
         else:
             atexit.register(make_writeback_func(self, self.func))
             self.__did_register_writeback = True
+
+###############################################################################
+# Driver for sanity checking and demonstration
+
+if __name__=='__main__':
+    wordlist = get_wordlist()
+
+    print 'Type a word to see if it\'s in the default wordlist:'
+
+    while True:
+        try:
+            word = raw_input(' > ').lower()
+        except EOFError:
+            print
+            break
+
+        print ('%s is in the wordlist' % word
+               if word in wordlist else
+               '%s is not in the wordlist' % word)

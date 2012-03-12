@@ -63,7 +63,7 @@ def none():
 
 from collections import defaultdict
 
-class ScrabbleBoard:
+class BoardState:
     'Represents a board populated with words.'
     def __init__(self, h, w):
         self.height = h
@@ -84,4 +84,3 @@ class ScrabbleBoard:
         return self.board[tile]
     def play_word(self, tile_list):
         pass
-
