@@ -36,6 +36,8 @@ class WordList:
     '''
     Represents a wordlist, and supports various query types. In particular:
      - in operator
+
+    TODO: add support for prefix queries. will have to ditch set representation
     '''
     def __init__(self, name):
         # apparently __file__ is not defined when the module is called from the
@@ -85,17 +87,28 @@ class WordList:
 # Driver for sanity checking and demonstration
 
 if __name__=='__main__':
+    import os
+    import sys
+    sys.path.append(os.getcwd())
+    
+    try:
+        from libs.termcolor import termcolor
+    except ImportError:
+        print 'Failed to import libs. Are you calling the driver from the ',
+        print 'project root? (cwd is %s)' % os.getcwd()
+        exit(1)
+
     wordlist = get_wordlist()
 
     print 'Type a word to see if it\'s in the default wordlist:'
-
     while True:
         try:
             word = raw_input(' > ').lower()
-        except EOFError:
+        except (EOFError, KeyboardInterrupt):
             print
             break
 
-        print ('%s is in the wordlist' % word
-               if word in wordlist else
-               '%s is not in the wordlist' % word)
+        present = word in wordlist
+        print termcolor.colored('%s is %s in the wordlist' %
+                (word, '' if present else 'not'),
+                'green' if present else 'red')
