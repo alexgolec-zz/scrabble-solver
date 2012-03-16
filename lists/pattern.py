@@ -98,7 +98,7 @@ if __name__=='__main__':
         p = Pattern(pattern)
         words = p.find_matches(wordlist, gutter)
         if len(words) == 0:
-            print 'No matches found'
+            print termcolor.colored('No matches found', 'red')
         for word in words:
-            print word
+            print termcolor.colored(word, 'green')
 
