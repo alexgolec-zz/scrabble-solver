@@ -46,11 +46,16 @@ def make_direction(d):
 # Essentially a named tuple representing a location and a character
 
 class BoardTile:
-    'Represents a letter and a position.'
+    '''
+    Represents a letter and a position. No contents checking is performed on
+    '''
     def __init__(self, pos, letter):
         self.pos = Position(pos)
-        assert len(letter) == 1, 'length of letter string should be one'
+        assert len(letter) <= 1, 'length of letter string should be one'
         self.letter = letter
+    def __repr__(self):
+        return (self.pos, self.letter).__str__()
+    __str__ = __repr__
 
 ###############################################################################
 # Representing a word on the board
@@ -66,7 +71,18 @@ def sliding_window(lst, width):
 def sort_by_field(lst, field):
     return sorted(lst, key=(lambda d: d[field]))
 
-class Word(list):
+class TileList(list):
+    '''
+    A class representing specifically lists of tiles.
+    '''
+    def get_pattern(self):
+        'Fetch the pattern represented by this letter list.'
+        return ''.join([i.letter for i in self])
+    def get_positions(self):
+        'Get the positions for the letters in this list.'
+        return [i.pos for pos in self]
+
+class Word(TileList):
     '''
     A list-like object that supports initialization by passing an array-like
     object.
@@ -104,7 +120,12 @@ def none():
 from collections import defaultdict
 
 class BoardState:
-    'Represents a board populated with words.'
+    '''
+    Represents a board populated with words.
+
+    Addressing is:
+    (X, Y) or (column, row)
+    '''
     def __init__(self, h, w):
         self.height = h
         self.width = w
@@ -112,17 +133,22 @@ class BoardState:
         self.board = defaultdict(none)
     def get_tile(self, tile):
         '''
-        Returns the tile object for this position, or None is no word was
+        Returns the tile object for this position, or None if no word was
         played there.
         '''
         return self.board[tile]
-    def __put_word(self, word):
+    def put_word(self, word):
         '''
-        Put a word onto the board. Note that this does no error checking or
-        overwrite checking.
+        Place a Word onto the board.
         '''
         for tile in word:
-            self.board[tile.pos] = tile
+            if tile.pos not in self:
+                raise ValueError, 'invalid tile position'
+            if tile.pos in self.board:
+                if tile.letter != self.board[tile.pos].letter:
+                    raise ValueError, 'tile letter does not match board letter: %s %s' % (self.board[tile.pos], tile)
+            else:
+                self.board[tile.pos] = tile
     def __get_intersecting_word_for_pos(self, tile, direction):
         '''
         Returns the word that intersects this tile, if any.
@@ -152,6 +178,9 @@ class BoardState:
         else:
            return sorted(tiles, key=lambda t: t.pos[0 if direction == ACROSS else 1])
     def get_intersecting_words(self, word_obj):
+        '''
+        Get the words that intersect orthogonally with the given word object
+        '''
         words = []
         for tile in word_obj:
             tiles = self.__get_intersecting_word_for_pos(
@@ -160,6 +189,9 @@ class BoardState:
                 words.append(''.join([t.letter for t in tiles]))
         return words
     def __make_pattern_rec(self, direction, remaining, current, ret, visited):
+        '''
+        Recursively generate the patterns given a tile position.
+        '''
         # have we seen this word already?
         word = tuple([w.letter for w in current])
         if word not in visited:
@@ -185,7 +217,8 @@ class BoardState:
                                     current+[self.board[frontier_right]],
                                     ret, visited)
             return
-        # by the time we reach here, we know both sides are good to explore
+        # by the time we reach here, we know both sides are good to explore.
+        # bounds checking is left off until here because the 
         if frontier_left in self:
             self.__make_pattern_rec(direction, remaining - 1,
                                     [BoardTile(frontier_left, '_')]+current,
@@ -195,6 +228,10 @@ class BoardState:
                                     current+[BoardTile(frontier_right, '_')],
                                     ret, visited)
     def make_patterns(self, pos, direction, max_tiles=7):
+        '''
+        Given an occupied board location and a direction, get the possible
+        patterns.
+        '''
         if pos not in self:
             raise ValueError, 'invalid tile location'
         if pos not in self.board:
@@ -202,8 +239,10 @@ class BoardState:
         ret = []
         for remaining in xrange(0, max_tiles):
             scr = []
-            self.__make_pattern_rec(direction, remaining, [self.board[pos]], scr, set())
+            self.__make_pattern_rec(direction, remaining,
+                                    [self.board[pos]], scr, set())
             ret.extend(scr)
+        print '\n'.join([''.join([i.letter for i in j]) for j in ret])
         return ret
     def __contains__(self, pos):
         return (pos[0] >= 0 and pos[0] <= self.width and
@@ -212,25 +251,35 @@ class BoardState:
 if __name__ == '__main__':
     b = BoardState(15, 15)
 
-    # ac
-    # bd
-    # e
+    def make_word(word, pos, direction):
+        lst = []
+        cur = pos
+        for letter in word:
+            lst.append(BoardTile((cur), letter))
+            cur = (cur[0] + direction.x, cur[1] + direction.y)
+        return Word(lst)
 
-    b.board[(0, 0)] = BoardTile((0, 0), 'a')
-    b.board[(0, 1)] = BoardTile((0, 1), 'b')
-    b.board[(0, 2)] = BoardTile((0, 2), 'e')
-    b.board[(1, 0)] = BoardTile((1, 0), 'c')
-    b.board[(1, 1)] = BoardTile((1, 1), 'd')
+    #   0 1 2
+    # 0 c a t
+    # 1 o   u
+    # 2 r e n t
+    # 3 n   e
+    # 4 e n d
+    # 5 r
+
+    b.put_word(make_word('cat', (0, 0), ACROSS))
+    b.put_word(make_word('corner', (0, 0), DOWN))
+    b.put_word(make_word('rent', (0, 2), ACROSS))
+    b.put_word(make_word('end', (0, 4), ACROSS))
+    b.put_word(make_word('tuned', (2, 0), DOWN))
 
     for i in xrange(0, 15):
         for j in xrange(0, 15):
             try:
-                ret = b.make_patterns((i, j), ACROSS)
+                b.make_patterns((i, j), ACROSS)
             except ValueError:
                 pass
             try:
-                ret = b.make_patterns((i, j), DOWN)
+                b.make_patterns((i, j), DOWN)
             except ValueError:
                 pass
-
-    print '\n'.join([''.join([i.letter for i in j]) for j in ret])
