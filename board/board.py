@@ -248,16 +248,16 @@ class BoardState:
         return (pos[0] >= 0 and pos[0] <= self.width and
                 pos[1] >= 0 and pos[1] <= self.height)
 
+def make_word(word, pos, direction):
+    lst = []
+    cur = pos
+    for letter in word:
+        lst.append(BoardTile((cur), letter))
+        cur = (cur[0] + direction.x, cur[1] + direction.y)
+    return Word(lst)
+
 if __name__ == '__main__':
     b = BoardState(15, 15)
-
-    def make_word(word, pos, direction):
-        lst = []
-        cur = pos
-        for letter in word:
-            lst.append(BoardTile((cur), letter))
-            cur = (cur[0] + direction.x, cur[1] + direction.y)
-        return Word(lst)
 
     #   0 1 2
     # 0 c a t
