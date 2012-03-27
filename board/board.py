@@ -76,8 +76,13 @@ class TileList(list):
     A class representing specifically lists of tiles.
     '''
     def get_pattern(self):
-        'Fetch the pattern represented by this letter list.'
-        return ''.join([i.letter for i in self])
+        '''
+        Fetch the pattern represented by this letter list, it contains
+        wildcards. Otherwise, return None.
+        '''
+        return (''.join([i.letter for i in self])
+                if any(i.letter for i in self)
+                else None)
     def get_positions(self):
         'Get the positions for the letters in this list.'
         return [i.pos for pos in self]
@@ -199,8 +204,9 @@ class BoardState:
         else:
             return
         # if we've run out of words, then add
-        if remaining == 0:
-            ret.append(current)
+        if remaining == 0 and len(current) > 1:
+            if any(i.letter == '_' for i in current):
+                ret.append(Word(current))
             return
         # establish the frontier
         frontier_left = (current[0].pos.x - direction.x, current[0].pos.y - direction.y)
@@ -242,13 +248,15 @@ class BoardState:
             self.__make_pattern_rec(direction, remaining,
                                     [self.board[pos]], scr, set())
             ret.extend(scr)
-        print '\n'.join([''.join([i.letter for i in j]) for j in ret])
         return ret
     def __contains__(self, pos):
         return (pos[0] >= 0 and pos[0] <= self.width and
                 pos[1] >= 0 and pos[1] <= self.height)
 
 def make_word(word, pos, direction):
+    '''
+    Make a word from a position and a direction.
+    '''
     lst = []
     cur = pos
     for letter in word:
@@ -256,7 +264,7 @@ def make_word(word, pos, direction):
         cur = (cur[0] + direction.x, cur[1] + direction.y)
     return Word(lst)
 
-if __name__ == '__main__':
+def get_example_board():
     b = BoardState(15, 15)
 
     #   0 1 2
@@ -273,13 +281,17 @@ if __name__ == '__main__':
     b.put_word(make_word('end', (0, 4), ACROSS))
     b.put_word(make_word('tuned', (2, 0), DOWN))
 
-    for i in xrange(0, 15):
-        for j in xrange(0, 15):
-            try:
-                b.make_patterns((i, j), ACROSS)
-            except ValueError:
-                pass
-            try:
-                b.make_patterns((i, j), DOWN)
-            except ValueError:
-                pass
+    return b
+
+b = get_example_board()
+
+for i in xrange(0, 15):
+    for j in xrange(0, 15):
+        try:
+            b.make_patterns((i, j), ACROSS)
+        except ValueError:
+            pass
+        try:
+            b.make_patterns((i, j), DOWN)
+        except ValueError:
+            pass

@@ -13,6 +13,7 @@ def get_wordlist(name='ntlworld.wordlist.txt'):
     return __wordlists[name]
 
 ###############################################################################
+# The WordList class
 
 import os
 
