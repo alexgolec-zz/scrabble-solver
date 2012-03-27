@@ -27,3 +27,14 @@ gutter = [random.choice(string.lowercase) for i in xrange(0, 7)]
 print '\n'.join(
         str(i) for i in words_for_pos(b, (2, 2), board.ACROSS, lists.get_wordlist(), gutter))
 
+for i in xrange(0, 15):
+    for j in xrange(0, 15):
+        pos = (i, j)
+        if pos not in b.board:
+            continue
+        print '\n'.join(
+                str(i) for i in words_for_pos(b,
+                                              pos,
+                                              board.ACROSS,
+                                              lists.get_wordlist(),
+                                              gutter))
