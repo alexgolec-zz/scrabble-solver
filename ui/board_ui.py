@@ -1,0 +1,184 @@
+# tic-tac-toe.py
+# Tic-Tac-Toe
+# Created by Mr.Yergler
+# Typed by Jimmy
+# March 24, 2010
+
+import pygame, sys, time
+from pygame import *
+
+class ScrabbleBoard(object):
+    
+    grid = [[ "3W", "NA", "NA", "2L", "NA", "NA", "NA", "3W", "NA", "NA", "NA", "2L", "NA", "NA", "3W"],
+            [ "NA", "2W", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "2W", "NA"],
+            [ "NA", "NA", "2W", "NA", "NA", "NA", "2L", "NA", "2L", "NA", "NA", "NA", "2W", "NA", "NA"],
+            [ "2L", "NA", "NA", "2W", "NA", "NA", "NA", "2L", "NA", "NA", "NA", "2W", "NA", "NA", "2L"],
+            [ "NA", "NA", "NA", "NA", "2W", "NA", "NA", "NA", "NA", "NA", "2W", "NA", "NA", "NA", "NA"],
+            [ "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA"],
+            [ "NA", "NA", "2L", "NA", "NA", "NA", "2L", "NA", "2L", "NA", "NA", "NA", "2L", "NA", "NA"],
+            [ "3W", "NA", "NA", "2L", "NA", "NA", "NA", "SS", "NA", "NA", "NA", "2L", "NA", "NA", "3W"],
+            [ "NA", "NA", "2L", "NA", "NA", "NA", "2L", "NA", "2L", "NA", "NA", "NA", "2L", "NA", "NA"],
+            [ "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA"],
+            [ "NA", "NA", "NA", "NA", "2W", "NA", "NA", "NA", "NA", "NA", "2W", "NA", "NA", "NA", "NA"],
+            [ "2L", "NA", "NA", "2W", "NA", "NA", "NA", "2L", "NA", "NA", "NA", "2W", "NA", "NA", "2L"],
+            [ "NA", "NA", "2W", "NA", "NA", "NA", "2L", "NA", "2L", "NA", "NA", "NA", "2W", "NA", "NA"],
+            [ "NA", "2W", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "2W", "NA"],
+            [ "3W", "NA", "NA", "2L", "NA", "NA", "NA", "3W", "NA", "NA", "NA", "2L", "NA", "NA", "3W"],
+            [ "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH"]]
+    
+    colors = {"3W":(255, 0, 0), "2L":(231, 254, 255), "3L":(0, 0, 255), "2W":(255, 192, 203), "SS":(255, 255, 255), "NA":(0, 255, 0), "HH":(255, 255, 255) }
+    
+    def __init__(self):
+        pygame.init()
+    
+        self.width, self.height = 500, 500
+        
+        self.screen = pygame.display.set_mode((self.width, self.height)) #@UndefinedVariable
+        pygame.display.set_caption('Scrabble Solver') #@UndefinedVariable
+        
+        self.board = self.__init_board__()
+        self.__show_board__()
+        
+        self.writeTo = [False, -1, -1]
+    
+    def __init_board__(self):
+        
+        background = pygame.Surface(self.screen.get_size())
+        background = background.convert()
+        background.fill((255, 255, 255))
+        
+        sizeX = float(len(self.grid[0]))
+        sizeY = float(len(self.grid))
+        
+        changeX = float(self.width) / sizeX
+        changeY = float(self.height) / sizeY
+        
+        for y in range(len(self.grid)):
+            for x in range(len(self.grid[0])):
+                # convert grid to tuple
+                self.grid[y][x] = [self.grid[y][x], None]
+                
+                # add colored rect 
+                pygame.draw.rect(background, self.getColor(y, x), #@UndefinedVariable
+                                                (x * changeX,
+                                                 y * changeY,
+                                                 (x + 1) * changeX,
+                                                 (y + 1) * changeY), 0)
+        
+        self.__draw_boarder__() # draw the boarders
+        
+        return background
+    
+    
+    def __draw_boarder__(self):
+        size = float(len(self.grid[0]))
+        
+        for i in range(len(self.grid[0])):
+            # Vertical lines
+            pygame.draw.line(self.screen, (0, 0, 0), (i * float(self.height) / size, 0), #@UndefinedVariable
+                                                    (i * float(self.height) / size, self.height), 2)
+            
+        size = float(len(self.grid))
+        for i in range(len(self.grid)):
+            # Horizontal lines
+            pygame.draw.line(self.screen, (0, 0, 0), (0, i * float(self.width) / size), #@UndefinedVariable
+                                                    (self.width, i * float(self.width) / size), 2)
+    
+    def getColor(self, i, j):
+        return self.colors[self.grid[i][j][0]]
+    
+    def getLetter(self, i, j):
+        return self.grid[i][j][1]
+    
+    
+    def start(self):
+        "start the game"
+        while (True):
+            for event in pygame.event.get(): #@UndefinedVariable
+                if event.type is pygame.QUIT:
+                    return
+                elif event.type is pygame.MOUSEBUTTONDOWN:
+                    self.__click_board__()
+                elif event.type == KEYDOWN:
+                    inkey = event.key
+                    if inkey == K_BACKSPACE:    # if backspace, set to blank
+                        self.setLetter('')
+                    elif inkey == K_RETURN:     # if return, stop editing that position
+                        self.writeTo[0] = False
+                    elif inkey in range(256):   # make sure within range
+                        self.setLetter(chr(inkey))
+                    self.update_board()
+            
+#            self.board.blit(self.background, (0, 0))
+#            pygame.display.flip()
+    
+    
+    def __show_board__(self):
+        # Redraw the board on the screen(ttt)
+        self.update_board()
+        self.screen.blit(self.board, (0, 0))
+        pygame.display.flip() #@UndefinedVariable
+    
+    
+    def __board_pos__(self, mouseX, mouseY):
+        row = mouseY / (self.height / len(self.grid))
+        col = mouseX / (self.width / len(self.grid[0]))
+        
+        return row, col
+    
+    def setLetter(self, letter, x=None, y=None):
+        if x or y is None:  # check if x or y are none
+            if self.writeTo[0]:     # if writeTo is true, set x/y
+                x = self.writeTo[1]
+                y = self.writeTo[2]
+#                self.writeTo[0] = False
+            else:
+                return      # otherwise just return
+        
+        self.grid[x][y][1] = letter
+        
+    
+    def __click_board__(self):
+        # Determine where clicked and draw
+        mouseX, mouseY = pygame.mouse.get_pos() #@UndefinedVariable
+        row, col = self.__board_pos__(mouseX, mouseY)
+        
+        self.writeTo = [True, row, col]
+        
+        self.update_board()
+    
+    def update_board(self):
+            sizeX = float(len(self.grid[0]))
+            sizeY = float(len(self.grid))
+            
+            changeX = float(self.width) / sizeX
+            changeY = float(self.height) / sizeY
+            
+            for y in range(len(self.grid)):
+                for x in range(len(self.grid[0])):
+                    if self.getLetter(y, x) is None:
+                        continue
+                    else:
+                        self.screen.fill(self.getColor(y, x),
+                                                    (x * changeX,
+                                                     y * changeY,
+                                                     changeX,
+                                                     changeY), 0)
+                        
+                        font = pygame.font.Font(None, 30) #@UndefinedVariable
+                        text = font.render(self.getLetter(y, x), 1, (0, 0, 0))
+                        self.screen.blit(text, (5 + x * float(self.height) / sizeX,
+                                               5 + y * float(self.width) / sizeY))
+            
+            self.__draw_boarder__()
+            
+            pygame.display.flip() #@UndefinedVariable
+
+
+def main():
+    game = ScrabbleBoard()
+    game.start()
+
+if __name__ == '__main__':
+    main()
+
