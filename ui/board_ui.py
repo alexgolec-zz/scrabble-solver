@@ -1,8 +1,5 @@
-# tic-tac-toe.py
-# Tic-Tac-Toe
-# Created by Mr.Yergler
-# Typed by Jimmy
-# March 24, 2010
+#Created by Nathaniel Clinger
+
 
 import pygame, sys, time
 from pygame import *
