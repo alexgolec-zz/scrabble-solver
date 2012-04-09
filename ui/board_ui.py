@@ -169,6 +169,8 @@ class ScrabbleBoard(object):
         text = font.render(self.getLetter(y, x), 1, (1, 0, 0))
         self.screen.blit(text, (5 + x * float(self.height) / sizeX,
                                 5 + y * float(self.width) / sizeY))
+        
+        self.__draw_boarder__() # create boarder now
     
     def update_board(self):
             sizeX = float(len(self.grid[0]))
