@@ -21,8 +21,8 @@ import scoring
 
 def get_best_words(b, gutter):
     ret = []
-    for i in xrange(0, 15):
-        for j in xrange(0, 15):
+    for i in xrange(0, b.width):
+        for j in xrange(0, b.height):
             pos = (i, j)
             if pos not in b.board:
                 continue
@@ -32,12 +32,40 @@ def get_best_words(b, gutter):
     return sorted(ret, key=lambda w: scoring.score_word(w))
 
 if __name__ == '__main__':
-    b = board.get_example_board()
-
     import random
     import string
 
+    from ui import board_ui
+
     gutter = [random.choice(string.lowercase) for i in xrange(0, 7)]
 
-    for w in get_best_words(b, gutter):
-        print scoring.score_word(w), w
+    class BoardDelegate(board_ui.ScrabbleBoardDelegate):
+        def __init__(self, wordlist, board_state):
+            self.wordlist = wordlist
+            self.board_state = board_state
+            self.best_words = None
+        def getNextBestWord(self, sender):
+            if self.best_words is None:
+                self.best_words = get_best_words(
+                    self.board_state, 'rlstnes')
+                print self.best_words
+            if self.best_words:
+                return self.best_words.pop()
+            else:
+                return None
+        def boardWasModified(self, sender):
+            self.best_words = None
+        def tileWasCleared(self, sender, pos):
+            try:
+                self.board_state.manually_delete_tile(pos)
+            except KeyError:
+                pass
+        def letterWasInput(self, sender, letter, pos):
+            self.board_state.manually_put_tile(
+                board.BoardTile(pos, letter)
+            )
+
+    game = board_ui.ScrabbleBoard(
+        delegate=BoardDelegate(lists.get_wordlist(), board.BoardState(15, 15))
+    )
+    game.start()

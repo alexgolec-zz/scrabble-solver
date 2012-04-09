@@ -4,6 +4,16 @@
 import pygame, sys, time
 from pygame import *
 
+class ScrabbleBoardDelegate:
+    def getNextBestWord(self, sender):
+        pass
+    def boardWasModified(self, sender):
+        pass
+    def tileWasCleared(self, sender, pos):
+        pass
+    def letterWasInput(self, sender, letter, pos):
+        pass
+
 class ScrabbleBoard(object):
     
     grid = [[ "3W", "NA", "NA", "2L", "NA", "NA", "NA", "3W", "NA", "NA", "NA", "2L", "NA", "NA", "3W" ],
@@ -25,7 +35,7 @@ class ScrabbleBoard(object):
     
     colors = {"3W":(255, 0, 0), "2L":(231, 254, 255), "3L":(0, 0, 255), "2W":(255, 192, 203), "SS":(255, 255, 255), "NA":(0, 255, 0), "HH":(255, 255, 255)}
     
-    def __init__(self):
+    def __init__(self, delegate=ScrabbleBoardDelegate()):
         pygame.init()
     
         self.width, self.height = 500, 500
@@ -37,6 +47,7 @@ class ScrabbleBoard(object):
         self.__show_board__()
         
         self.writeTo = [False, -1, -1]
+        self.delegate = delegate
     
     def __init_board__(self):
         
@@ -137,6 +148,10 @@ class ScrabbleBoard(object):
                 return      # otherwise just return
         
         self.grid[x][y][1] = letter
+        if letter == '':
+            self.delegate.tileWasCleared(self, (y, x))
+        else:
+            self.delegate.letterWasInput(self, letter, (y, x))
         
     
     def __click_board__(self):
@@ -147,7 +162,10 @@ class ScrabbleBoard(object):
         if row != len(self.grid)-1 or col != len(self.grid[1])-1: 
             self.writeTo = [True, row, col]
         else:
-            print "clicked go"
+            best_word = self.delegate.getNextBestWord(self)
+            for tile in best_word:
+                self.setRedLetter(tile.letter, tile.pos[0], tile.pos[1])
+            print best_word
         
         self.update_board()
     

@@ -142,18 +142,22 @@ class BoardState:
         played there.
         '''
         return self.board[tile]
+    def manually_delete_tile(self, pos):
+        del self.board[pos]
+    def manually_put_tile(self, tile):
+        if tile.pos not in self:
+            raise ValueError, 'invalid tile position'
+        self.board[tile.pos] = tile
     def put_word(self, word):
         '''
         Place a Word onto the board.
         '''
         for tile in word:
-            if tile.pos not in self:
-                raise ValueError, 'invalid tile position'
             if tile.pos in self.board:
                 if tile.letter != self.board[tile.pos].letter:
                     raise ValueError, 'tile letter does not match board letter: %s %s' % (self.board[tile.pos], tile)
             else:
-                self.board[tile.pos] = tile
+                self.manually_put_tile(tile)
     def __get_intersecting_word_for_pos(self, tile, direction):
         '''
         Returns the word that intersects this tile, if any.
