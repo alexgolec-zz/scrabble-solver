@@ -48,7 +48,6 @@ if __name__ == '__main__':
             if self.best_words is None:
                 self.best_words = get_best_words(
                     self.board_state, 'rlstnes')
-                print self.best_words
             if self.best_words:
                 return self.best_words.pop()
             else:

@@ -152,7 +152,7 @@ class ScrabbleBoard(object):
             self.delegate.tileWasCleared(self, (y, x))
         else:
             self.delegate.letterWasInput(self, letter, (y, x))
-        
+        self.delegate.boardWasModified(self)
     
     def __click_board__(self):
         ''' Determine where clicked and draw '''
@@ -163,8 +163,9 @@ class ScrabbleBoard(object):
             self.writeTo = [True, row, col]
         else:
             best_word = self.delegate.getNextBestWord(self)
-            for tile in best_word:
-                self.setRedLetter(tile.letter, tile.pos[0], tile.pos[1])
+            if best_word:
+                for tile in best_word:
+                    self.setRedLetter(tile.letter, tile.pos[0], tile.pos[1])
             print best_word
         
         self.update_board()
