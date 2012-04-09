@@ -1,13 +1,29 @@
 from collections import defaultdict
 
-class DoubleWord:
-    pass
-class TripleWord:
-    pass
-class DoubleLetter:
-    pass
-class TripleLetter:
-    pass
+class ModifierBase:
+    __str__ = lambda self: '..'
+    def score_letter(self, let_score):
+        return let_score
+    def score_word(self, word_score):
+        return word_score
+
+class DoubleWord(ModifierBase):
+    __str__ = lambda self: 'DW'
+    def score_word(self, word_score):
+        return 2 * word_score
+class TripleWord(ModifierBase):
+    __str__ = lambda self: 'TW'
+    def score_word(self, word_score):
+        return 3 * word_score
+class DoubleLetter(ModifierBase):
+    __str__ = lambda self: 'DL'
+    def score_letter(self, let_score):
+        return 2 * let_score
+class TripleLetter(ModifierBase):
+    __str__ = lambda self: 'TL'
+    def score_letter(self, let_score):
+        return 3 * let_score
+
 
 # define the moodifiers on the upper left portion of the board and rotate
 # the symmetrically across the rest
@@ -39,10 +55,17 @@ for pos in upper_left_modifiers:
 del upper_left_modifiers
 
 # rotate the upper portion onto the bottom
-modifiers = defaultdict(lambda: None)
+modifiers = defaultdict(lambda: ModifierBase)
 modifiers.update(upper_modifiers)
 for pos in upper_modifiers:
     modifier = upper_modifiers[pos]
     modifiers[pos[0], 14 - pos[1]] = modifier
 
 del upper_modifiers
+
+def __debug_print():
+    for i in xrange(0, 15):
+        for j in xrange(0, 15):
+            print modifiers[(i, j)](),
+        else:
+            print

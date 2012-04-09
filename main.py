@@ -17,24 +17,27 @@ def words_for_pos(brd, pos, direction, wordlist, gutter):
                                       for i in xrange(0, len(pat))))
     return ret
 
-b = board.get_example_board()
+import scoring
 
-import random
-import string
+def get_best_words(b, gutter):
+    ret = []
+    for i in xrange(0, 15):
+        for j in xrange(0, 15):
+            pos = (i, j)
+            if pos not in b.board:
+                continue
+            words = words_for_pos(b, pos, board.ACROSS, lists.get_wordlist(),
+                                  gutter)
+            ret.extend(words)
+    return sorted(ret, key=lambda w: scoring.score_word(w))
 
-gutter = [random.choice(string.lowercase) for i in xrange(0, 7)]
+if __name__ == '__main__':
+    b = board.get_example_board()
 
-print '\n'.join(
-        str(i) for i in words_for_pos(b, (2, 2), board.ACROSS, lists.get_wordlist(), gutter))
+    import random
+    import string
 
-for i in xrange(0, 15):
-    for j in xrange(0, 15):
-        pos = (i, j)
-        if pos not in b.board:
-            continue
-        print '\n'.join(
-                str(i) for i in words_for_pos(b,
-                                              pos,
-                                              board.ACROSS,
-                                              lists.get_wordlist(),
-                                              gutter))
+    gutter = [random.choice(string.lowercase) for i in xrange(0, 7)]
+
+    for w in get_best_words(b, gutter):
+        print scoring.score_word(w), w
