@@ -6,24 +6,24 @@ from pygame import *
 
 class ScrabbleBoard(object):
     
-    grid = [[ "3W", "NA", "NA", "2L", "NA", "NA", "NA", "3W", "NA", "NA", "NA", "2L", "NA", "NA", "3W"],
-            [ "NA", "2W", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "2W", "NA"],
-            [ "NA", "NA", "2W", "NA", "NA", "NA", "2L", "NA", "2L", "NA", "NA", "NA", "2W", "NA", "NA"],
-            [ "2L", "NA", "NA", "2W", "NA", "NA", "NA", "2L", "NA", "NA", "NA", "2W", "NA", "NA", "2L"],
-            [ "NA", "NA", "NA", "NA", "2W", "NA", "NA", "NA", "NA", "NA", "2W", "NA", "NA", "NA", "NA"],
-            [ "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA"],
-            [ "NA", "NA", "2L", "NA", "NA", "NA", "2L", "NA", "2L", "NA", "NA", "NA", "2L", "NA", "NA"],
-            [ "3W", "NA", "NA", "2L", "NA", "NA", "NA", "SS", "NA", "NA", "NA", "2L", "NA", "NA", "3W"],
-            [ "NA", "NA", "2L", "NA", "NA", "NA", "2L", "NA", "2L", "NA", "NA", "NA", "2L", "NA", "NA"],
-            [ "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA"],
-            [ "NA", "NA", "NA", "NA", "2W", "NA", "NA", "NA", "NA", "NA", "2W", "NA", "NA", "NA", "NA"],
-            [ "2L", "NA", "NA", "2W", "NA", "NA", "NA", "2L", "NA", "NA", "NA", "2W", "NA", "NA", "2L"],
-            [ "NA", "NA", "2W", "NA", "NA", "NA", "2L", "NA", "2L", "NA", "NA", "NA", "2W", "NA", "NA"],
-            [ "NA", "2W", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "2W", "NA"],
-            [ "3W", "NA", "NA", "2L", "NA", "NA", "NA", "3W", "NA", "NA", "NA", "2L", "NA", "NA", "3W"],
-            [ "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH"]]
+    grid = [[ "3W", "NA", "NA", "2L", "NA", "NA", "NA", "3W", "NA", "NA", "NA", "2L", "NA", "NA", "3W" ],
+            [ "NA", "2W", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "2W", "NA" ],
+            [ "NA", "NA", "2W", "NA", "NA", "NA", "2L", "NA", "2L", "NA", "NA", "NA", "2W", "NA", "NA" ],
+            [ "2L", "NA", "NA", "2W", "NA", "NA", "NA", "2L", "NA", "NA", "NA", "2W", "NA", "NA", "2L" ],
+            [ "NA", "NA", "NA", "NA", "2W", "NA", "NA", "NA", "NA", "NA", "2W", "NA", "NA", "NA", "NA" ],
+            [ "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA" ],
+            [ "NA", "NA", "2L", "NA", "NA", "NA", "2L", "NA", "2L", "NA", "NA", "NA", "2L", "NA", "NA" ],
+            [ "3W", "NA", "NA", "2L", "NA", "NA", "NA", "SS", "NA", "NA", "NA", "2L", "NA", "NA", "3W" ],
+            [ "NA", "NA", "2L", "NA", "NA", "NA", "2L", "NA", "2L", "NA", "NA", "NA", "2L", "NA", "NA" ],
+            [ "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA" ],
+            [ "NA", "NA", "NA", "NA", "2W", "NA", "NA", "NA", "NA", "NA", "2W", "NA", "NA", "NA", "NA" ],
+            [ "2L", "NA", "NA", "2W", "NA", "NA", "NA", "2L", "NA", "NA", "NA", "2W", "NA", "NA", "2L" ],
+            [ "NA", "NA", "2W", "NA", "NA", "NA", "2L", "NA", "2L", "NA", "NA", "NA", "2W", "NA", "NA" ],
+            [ "NA", "2W", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "2W", "NA" ],
+            [ "3W", "NA", "NA", "2L", "NA", "NA", "NA", "3W", "NA", "NA", "NA", "2L", "NA", "NA", "3W" ],
+            [ "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH" ]]
     
-    colors = {"3W":(255, 0, 0), "2L":(231, 254, 255), "3L":(0, 0, 255), "2W":(255, 192, 203), "SS":(255, 255, 255), "NA":(0, 255, 0), "HH":(255, 255, 255) }
+    colors = {"3W":(255, 0, 0), "2L":(231, 254, 255), "3L":(0, 0, 255), "2W":(255, 192, 203), "SS":(255, 255, 255), "NA":(0, 255, 0), "HH":(255, 255, 255)}
     
     def __init__(self):
         pygame.init()
@@ -52,7 +52,7 @@ class ScrabbleBoard(object):
         
         for y in range(len(self.grid)):
             for x in range(len(self.grid[0])):
-                # convert grid to tuple
+                # convert grid to list of what it is + associated letter
                 self.grid[y][x] = [self.grid[y][x], None]
                 
                 # add colored rect 
@@ -63,6 +63,8 @@ class ScrabbleBoard(object):
                                                  (y + 1) * changeY), 0)
         
         self.__draw_boarder__() # draw the boarders
+        
+        self.grid[len(self.grid)-1][len(self.grid[1])-1][1] = "GO"  # set up button
         
         return background
     
@@ -111,7 +113,7 @@ class ScrabbleBoard(object):
     
     
     def __show_board__(self):
-        # Redraw the board on the screen(ttt)
+        ''' Redraw the board on the screen '''
         self.update_board()
         self.screen.blit(self.board, (0, 0))
         pygame.display.flip() #@UndefinedVariable
@@ -136,13 +138,37 @@ class ScrabbleBoard(object):
         
     
     def __click_board__(self):
-        # Determine where clicked and draw
+        ''' Determine where clicked and draw '''
         mouseX, mouseY = pygame.mouse.get_pos() #@UndefinedVariable
         row, col = self.__board_pos__(mouseX, mouseY)
         
-        self.writeTo = [True, row, col]
+        if row != len(self.grid)-1 or col != len(self.grid[1])-1: 
+            self.writeTo = [True, row, col]
+        else:
+            print "clicked go"
         
         self.update_board()
+    
+    def setRedLetter(self, letter, x, y):
+        '''set up a red letter for a new word being added to the grid'''
+        self.grid[x][y][1] = letter
+        
+        sizeX = float(len(self.grid[0]))
+        sizeY = float(len(self.grid))
+        
+        changeX = float(self.width) / sizeX
+        changeY = float(self.height) / sizeY
+        
+        self.screen.fill(self.getColor(y, x),
+                         (x * changeX,
+                          y * changeY,
+                          changeX,
+                          changeY), 0)
+        
+        font = pygame.font.Font(None, 30) #@UndefinedVariable
+        text = font.render(self.getLetter(y, x), 1, (1, 0, 0))
+        self.screen.blit(text, (5 + x * float(self.height) / sizeX,
+                                5 + y * float(self.width) / sizeY))
     
     def update_board(self):
             sizeX = float(len(self.grid[0]))
