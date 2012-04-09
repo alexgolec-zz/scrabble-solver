@@ -49,7 +49,8 @@ if __name__ == '__main__':
                 self.best_words = get_best_words(
                     self.board_state, 'rlstnes')
             if self.best_words:
-                return self.best_words.pop()
+                best = self.best_words.pop()
+                return [i for i in best if i.pos not in self.board_state.board]
             else:
                 return None
         def boardWasModified(self, sender):
