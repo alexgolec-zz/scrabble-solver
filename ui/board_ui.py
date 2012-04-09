@@ -75,9 +75,9 @@ class ScrabbleBoard(object):
         
         self.__draw_boarder__() # draw the boarders
         
-        self.grid[len(self.grid)-1][len(self.grid[1])-1][1] = "GO"  # set up button
+        self.grid[len(self.grid) - 1][len(self.grid[1]) - 1][1] = "GO"  # set up button
         
-        self.update_board()
+        self.update_board()     # make sure to update the board so that we see the changes
         
         return background
     
@@ -105,6 +105,9 @@ class ScrabbleBoard(object):
     
     def start(self):
         "start the game"
+        
+        self.update_board()
+        
         while (True):
             for event in pygame.event.get(): #@UndefinedVariable
                 if event.type is pygame.QUIT:
@@ -152,26 +155,28 @@ class ScrabbleBoard(object):
             self.delegate.tileWasCleared(self, (y, x))
         else:
             self.delegate.letterWasInput(self, letter, (y, x))
-        
+        self.delegate.boardWasModified(self)
     
     def __click_board__(self):
         ''' Determine where clicked and draw '''
         mouseX, mouseY = pygame.mouse.get_pos() #@UndefinedVariable
         row, col = self.__board_pos__(mouseX, mouseY)
         
-        if row != len(self.grid)-1 or col != len(self.grid[1])-1: 
+        if row != len(self.grid) - 1 or col != len(self.grid[1]) - 1:
             self.writeTo = [True, row, col]
         else:
             best_word = self.delegate.getNextBestWord(self)
-            for tile in best_word:
-                self.setRedLetter(tile.letter, tile.pos[0], tile.pos[1])
+            if best_word:
+                for tile in best_word:
+                    self.setRedLetter(tile.letter, tile.pos[0], tile.pos[1])
             print best_word
         
-        self.update_board()
+#        self.update_board()
+    
     
     def setRedLetter(self, letter, x, y):
         '''set up a red letter for a new word being added to the grid'''
-        self.grid[x][y][1] = letter
+        self.grid[y][x][1] = letter
         
         sizeX = float(len(self.grid[0]))
         sizeY = float(len(self.grid))
@@ -179,51 +184,54 @@ class ScrabbleBoard(object):
         changeX = float(self.width) / sizeX
         changeY = float(self.height) / sizeY
         
-        self.screen.fill(self.getColor(x, y),
+        self.screen.fill(self.getColor(y, x),
                          (x * changeX,
                           y * changeY,
                           changeX,
                           changeY), 0)
         
         font = pygame.font.Font(None, 30) #@UndefinedVariable
-        text = font.render(self.getLetter(x, y), 1, (1, 0, 0))
+        text = font.render(self.getLetter(y, x), 1, (1, 0, 0))
         self.screen.blit(text, (5 + x * float(self.height) / sizeX,
                                 5 + y * float(self.width) / sizeY))
         
         self.__draw_boarder__() # create boarder now
+        
+        pygame.display.flip() #@UndefinedVariable
     
     def update_board(self):
-            sizeX = float(len(self.grid[0]))
-            sizeY = float(len(self.grid))
+        print "in update"
+        sizeX = float(len(self.grid[0]))
+        sizeY = float(len(self.grid))
             
-            changeX = float(self.width) / sizeX
-            changeY = float(self.height) / sizeY
-            
-            for y in range(len(self.grid)):
-                for x in range(len(self.grid[0])):
-                    if self.getLetter(y, x) is None:
-                        continue
-                    else:
-                        self.screen.fill(self.getColor(y, x),
-                                                    (x * changeX,
-                                                     y * changeY,
-                                                     changeX,
-                                                     changeY), 0)
-                        
-                        font = pygame.font.Font(None, 30) #@UndefinedVariable
-                        text = font.render(self.getLetter(y, x), 1, (0, 0, 0))
-                        self.screen.blit(text, (5 + x * float(self.height) / sizeX,
-                                               5 + y * float(self.width) / sizeY))
-            
-            self.__draw_boarder__()
-            
-            pygame.display.flip() #@UndefinedVariable
+        changeX = float(self.width) / sizeX
+        changeY = float(self.height) / sizeY
+        
+        for y in range(len(self.grid)):
+            for x in range(len(self.grid[0])):
+                if self.getLetter(y, x) is None:
+                    continue
+                else:
+                    self.screen.fill(self.getColor(y, x),
+                                                (x * changeX,
+                                                 y * changeY,
+                                                 changeX,
+                                                 changeY), 0)
+                    
+                    font = pygame.font.Font(None, 30) #@UndefinedVariable
+                    text = font.render(self.getLetter(y, x), 1, (0, 0, 0))
+                    self.screen.blit(text, (5 + x * float(self.height) / sizeX,
+                                           5 + y * float(self.width) / sizeY))
+        
+        self.__draw_boarder__()
+        
+        pygame.display.flip() #@UndefinedVariable
 
 
-def main():
-    game = ScrabbleBoard()
-    game.start()
-
-if __name__ == '__main__':
-    main()
+#def main():
+#    game = ScrabbleBoard()
+#    game.start()
+#
+#if __name__ == '__main__':
+#    main()
 
