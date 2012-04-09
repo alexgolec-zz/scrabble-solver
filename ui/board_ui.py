@@ -159,14 +159,14 @@ class ScrabbleBoard(object):
         changeX = float(self.width) / sizeX
         changeY = float(self.height) / sizeY
         
-        self.screen.fill(self.getColor(y, x),
+        self.screen.fill(self.getColor(x, y),
                          (x * changeX,
                           y * changeY,
                           changeX,
                           changeY), 0)
         
         font = pygame.font.Font(None, 30) #@UndefinedVariable
-        text = font.render(self.getLetter(y, x), 1, (1, 0, 0))
+        text = font.render(self.getLetter(x, y), 1, (1, 0, 0))
         self.screen.blit(text, (5 + x * float(self.height) / sizeX,
                                 5 + y * float(self.width) / sizeY))
         
