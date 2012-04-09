@@ -33,7 +33,9 @@ class ScrabbleBoard(object):
             [ "3W", "NA", "NA", "2L", "NA", "NA", "NA", "3W", "NA", "NA", "NA", "2L", "NA", "NA", "3W" ],
             [ "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH" ]]
     
-    colors = {"3W":(255, 0, 0), "2L":(231, 254, 255), "3L":(0, 0, 255), "2W":(255, 192, 203), "SS":(255, 255, 255), "NA":(0, 255, 0), "HH":(255, 255, 255)}
+    colors = {"3W":(155, 0, 0), "2L":(131, 154, 255), "3L":(0, 0, 255), 
+              "2W":(255, 192, 203), "SS":(255, 255, 255), "NA":(0, 255, 0), 
+              "HH":(255, 255, 255)}
     
     def __init__(self, delegate=ScrabbleBoardDelegate()):
         pygame.init()
@@ -87,14 +89,16 @@ class ScrabbleBoard(object):
         
         for i in range(len(self.grid[0])):
             # Vertical lines
-            pygame.draw.line(self.screen, (0, 0, 0), (i * float(self.height) / size, 0), #@UndefinedVariable
-                                                    (i * float(self.height) / size, self.height), 2)
+            pygame.draw.line(self.screen, (0, 0, 0), #@UndefinedVariable
+                            (i * float(self.height) / size, 0), 
+                            (i * float(self.height) / size, self.height), 2)
             
         size = float(len(self.grid))
         for i in range(len(self.grid)):
             # Horizontal lines
-            pygame.draw.line(self.screen, (0, 0, 0), (0, i * float(self.width) / size), #@UndefinedVariable
-                                                    (self.width, i * float(self.width) / size), 2)
+            pygame.draw.line(self.screen, (0, 0, 0), #@UndefinedVariable
+                            (0, i * float(self.width) / size), 
+                            (self.width, i * float(self.width) / size), 2)
     
     def getColor(self, i, j):
         return self.colors[self.grid[i][j][0]]
@@ -165,13 +169,12 @@ class ScrabbleBoard(object):
         if row != len(self.grid) - 1 or col != len(self.grid[1]) - 1:
             self.writeTo = [True, row, col]
         else:
+            self.update_board() # update to current board state
             best_word = self.delegate.getNextBestWord(self)
             if best_word:
                 for tile in best_word:
                     self.setRedLetter(tile.letter, tile.pos[0], tile.pos[1])
             print best_word
-        
-#        self.update_board()
     
     
     def setRedLetter(self, letter, x, y):
@@ -190,17 +193,20 @@ class ScrabbleBoard(object):
                           changeX,
                           changeY), 0)
         
+#        screen.blit(fontobject.render(message, 1, (255, 255, 255)),
+#                ((screen.get_width() / 2) - 100, (screen.get_height() / 2) - 10))
+        
         font = pygame.font.Font(None, 30) #@UndefinedVariable
-        text = font.render(self.getLetter(y, x), 1, (1, 0, 0))
-        self.screen.blit(text, (5 + x * float(self.height) / sizeX,
-                                5 + y * float(self.width) / sizeY))
+#        text = font.render(self.getLetter(y, x), 1, (1, 0, 0))
+        self.screen.blit(font.render(self.getLetter(y, x), 1, (255, 0, 0)), 
+                         (5 + x * float(self.height) / sizeX,
+                          5 + y * float(self.width) / sizeY))
         
         self.__draw_boarder__() # create boarder now
         
         pygame.display.flip() #@UndefinedVariable
     
     def update_board(self):
-        print "in update"
         sizeX = float(len(self.grid[0]))
         sizeY = float(len(self.grid))
             
