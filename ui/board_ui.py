@@ -66,6 +66,8 @@ class ScrabbleBoard(object):
         
         self.grid[len(self.grid)-1][len(self.grid[1])-1][1] = "GO"  # set up button
         
+        self.update_board()
+        
         return background
     
     
