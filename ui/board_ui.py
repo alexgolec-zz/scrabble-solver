@@ -13,6 +13,8 @@ class ScrabbleBoardDelegate:
         pass
     def letterWasInput(self, sender, letter, pos):
         pass
+    def acceptWord(self, sender, word):
+        pass
 
 class ScrabbleBoard(object):
     
@@ -50,6 +52,7 @@ class ScrabbleBoard(object):
         
         self.writeTo = [False, -1, -1]
         self.delegate = delegate
+        self.last_word = None
     
     def __init_board__(self):
         
@@ -160,7 +163,8 @@ class ScrabbleBoard(object):
         else:
             self.delegate.letterWasInput(self, letter, (y, x))
         self.delegate.boardWasModified(self)
-    
+        self.delegate.acceptWord(self, self.last_word)
+
     def __click_board__(self):
         ''' Determine where clicked and draw '''
         mouseX, mouseY = pygame.mouse.get_pos() #@UndefinedVariable
@@ -174,6 +178,7 @@ class ScrabbleBoard(object):
             if best_word:
                 for tile in best_word:
                     self.setRedLetter(tile.letter, tile.pos[0], tile.pos[1])
+            self.last_word = best_word
             print best_word
     
     

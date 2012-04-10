@@ -63,9 +63,10 @@ class WordList:
             # out?
             for line in f.xreadlines():
                 self.wordlist.add(line.replace('\n', ''))
-    def contains(self, word):
+    def __contains__(self, word):
         'Checks to see if the wordlist recognizes this word.'
         return word.lower() in self.wordlist
+    contains = __contains__
     # the contains operator is the same function as the contains method
     __contains__ = contains
     def add_word(self, word):

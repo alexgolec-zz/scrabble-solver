@@ -11,10 +11,15 @@ def words_for_pos(brd, pos, direction, wordlist, gutter):
         p = pattern.Pattern(pat.get_pattern())
         matches = p.find_matches(wordlist, gutter)
         for m in matches:
+            # check that the intersection words are valid
+            tile = board.Word([board.BoardTile(pat[i].pos, m[i])
+                               for i in xrange(0, len(pat))])
+            ints = brd.get_intersecting_words(tile)
+            if any(i not in wordlist for i in ints):
+                continue
             # no need to use a full blown Word object, since we can trust the
             # returned list or correctly ordered
-            ret.append(board.TileList(board.BoardTile(pat[i].pos, m[i])
-                                      for i in xrange(0, len(pat))))
+            ret.append(tile)
     return ret
 
 import scoring
@@ -27,6 +32,9 @@ def get_best_words(b, gutter):
             if pos not in b.board:
                 continue
             words = words_for_pos(b, pos, board.ACROSS, lists.get_wordlist(),
+                                  gutter)
+            ret.extend(words)
+            words = words_for_pos(b, pos, board.DOWN, lists.get_wordlist(),
                                   gutter)
             ret.extend(words)
     return sorted(ret, key=lambda w: scoring.score_word(w))
@@ -44,10 +52,11 @@ if __name__ == '__main__':
             self.wordlist = wordlist
             self.board_state = board_state
             self.best_words = None
+            self.hand = {}
         def getNextBestWord(self, sender):
             if self.best_words is None:
                 self.best_words = get_best_words(
-                    self.board_state, 'rlstnes')
+                    self.board_state, self.getHand())
             if self.best_words:
                 best = self.best_words.pop()
                 return [i for i in best if i.pos not in self.board_state.board]
@@ -60,10 +69,22 @@ if __name__ == '__main__':
                 self.board_state.manually_delete_tile(pos)
             except KeyError:
                 pass
+            if pos[1] == 15:
+                del self.hand[pos[0]]
+                print 'deleted hand pos', pos[0]
         def letterWasInput(self, sender, letter, pos):
             self.board_state.manually_put_tile(
                 board.BoardTile(pos, letter)
             )
+            if pos[1] == 15:
+                self.hand[pos[0]] = letter
+                print 'set hand position', pos[0], 'to', letter
+                print self.getHand()
+        def acceptWord(self, sender, word):
+            if word:
+                self.board_state.put_word(word)
+        def getHand(self):
+            return ''.join(self.hand[i] for i in self.hand)
 
     game = board_ui.ScrabbleBoard(
         delegate=BoardDelegate(lists.get_wordlist(), board.BoardState(15, 15))
