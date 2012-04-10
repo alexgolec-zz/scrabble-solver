@@ -18,23 +18,23 @@ class ScrabbleBoardDelegate:
 
 class ScrabbleBoard(object):
     
-    grid = [[ "3W", "NA", "NA", "2L", "NA", "NA", "NA", "3W", "NA", "NA", "NA", "2L", "NA", "NA", "3W" ],
-            [ "NA", "2W", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "2W", "NA" ],
-            [ "NA", "NA", "2W", "NA", "NA", "NA", "2L", "NA", "2L", "NA", "NA", "NA", "2W", "NA", "NA" ],
-            [ "2L", "NA", "NA", "2W", "NA", "NA", "NA", "2L", "NA", "NA", "NA", "2W", "NA", "NA", "2L" ],
-            [ "NA", "NA", "NA", "NA", "2W", "NA", "NA", "NA", "NA", "NA", "2W", "NA", "NA", "NA", "NA" ],
-            [ "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA" ],
+    grid = [[ "NA", "NA", "NA", "3W", "NA", "NA", "3L", "NA", "3L", "NA", "NA", "3W", "NA", "NA", "NA" ],
+            [ "NA", "NA", "2L", "NA", "NA", "2W", "NA", "NA", "NA", "2W", "NA", "NA", "2L", "NA", "NA" ],
+            [ "NA", "2L", "NA", "NA", "2L", "NA", "NA", "NA", "NA", "NA", "2L", "NA", "NA", "2L", "NA" ],
+            [ "3W", "NA", "NA", "3L", "NA", "NA", "NA", "2W", "NA", "NA", "NA", "3L", "NA", "NA", "3W" ],
             [ "NA", "NA", "2L", "NA", "NA", "NA", "2L", "NA", "2L", "NA", "NA", "NA", "2L", "NA", "NA" ],
-            [ "3W", "NA", "NA", "2L", "NA", "NA", "NA", "SS", "NA", "NA", "NA", "2L", "NA", "NA", "3W" ],
-            [ "NA", "NA", "2L", "NA", "NA", "NA", "2L", "NA", "2L", "NA", "NA", "NA", "2L", "NA", "NA" ],
-            [ "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA" ],
-            [ "NA", "NA", "NA", "NA", "2W", "NA", "NA", "NA", "NA", "NA", "2W", "NA", "NA", "NA", "NA" ],
-            [ "2L", "NA", "NA", "2W", "NA", "NA", "NA", "2L", "NA", "NA", "NA", "2W", "NA", "NA", "2L" ],
-            [ "NA", "NA", "2W", "NA", "NA", "NA", "2L", "NA", "2L", "NA", "NA", "NA", "2W", "NA", "NA" ],
             [ "NA", "2W", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "2W", "NA" ],
-            [ "3W", "NA", "NA", "2L", "NA", "NA", "NA", "3W", "NA", "NA", "NA", "2L", "NA", "NA", "3W" ],
+            [ "3L", "NA", "NA", "NA", "2L", "NA", "NA", "NA", "NA", "NA", "2L", "NA", "NA", "NA", "3L" ],
+            [ "NA", "NA", "NA", "2W", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "2W", "NA", "NA", "NA" ],
+            [ "3L", "NA", "NA", "NA", "2L", "NA", "NA", "NA", "NA", "NA", "2L", "NA", "NA", "NA", "3L" ],
+            [ "NA", "2W", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "3L", "NA", "NA", "NA", "2W", "NA" ],
+            [ "NA", "NA", "2L", "NA", "NA", "NA", "2L", "NA", "2L", "NA", "NA", "NA", "2L", "NA", "NA" ],
+            [ "3W", "NA", "NA", "3L", "NA", "NA", "NA", "2W", "NA", "NA", "NA", "3L", "NA", "NA", "3W" ],
+            [ "NA", "2L", "NA", "NA", "2L", "NA", "NA", "NA", "NA", "NA", "2L", "NA", "NA", "2L", "NA" ],
+            [ "NA", "NA", "2L", "NA", "NA", "2W", "NA", "NA", "NA", "2W", "NA", "NA", "2L", "NA", "NA" ],
+            [ "NA", "NA", "NA", "3W", "NA", "NA", "3L", "NA", "3L", "NA", "NA", "3W", "NA", "NA", "NA" ],
             [ "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH", "HH" ]]
-    
+
     colors = {"3W":(155, 0, 0), "2L":(131, 154, 255), "3L":(0, 0, 255), 
               "2W":(255, 192, 203), "SS":(255, 255, 255), "NA":(0, 255, 0), 
               "HH":(255, 255, 255)}
