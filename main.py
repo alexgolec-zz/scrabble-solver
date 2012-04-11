@@ -1,13 +1,17 @@
 import board.board as board
 import lists.lists as lists
 import lists.pattern as pattern
+import time
 
 def words_for_pos(brd, pos, direction, wordlist, gutter):
     '''
     Given a board, a position, and a direction, get the words that would fit.
     '''
+    print 'Searching board space'
+    starttime = time.time()
     ret = []
-    for pat in brd.make_patterns(pos, direction, len(gutter)):
+    patterns = brd.make_patterns(pos, direction, len(gutter))
+    for pat in patterns:
         p = pattern.Pattern(pat.get_pattern())
         matches = p.find_matches(wordlist, gutter)
         for m in matches:
@@ -20,6 +24,9 @@ def words_for_pos(brd, pos, direction, wordlist, gutter):
             # no need to use a full blown Word object, since we can trust the
             # returned list or correctly ordered
             ret.append(tile)
+    endtime = time.time()
+    print 'Filled %d patterns in %.2f seconds' % (len(patterns), float(endtime) -
+                                                     starttime)
     return ret
 
 import scoring
@@ -58,7 +65,8 @@ if __name__ == '__main__':
                 self.best_words = get_best_words(
                     self.board_state, self.getHand())
             if self.best_words:
-                best = self.best_words.pop()
+                #best = self.best_words.pop()
+                best = self.best_words[-1]
                 return [i for i in best if i.pos not in self.board_state.board]
             else:
                 return None
